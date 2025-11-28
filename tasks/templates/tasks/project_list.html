@@ -1,0 +1,110 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Проєкти - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-folder2"></i> Проєкти</h1>
+    <a href="{% url 'project_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Створити проєкт
+    </a>
+</div>
+
+<!-- Пошук -->
+<div class="filter-section">
+    <form method="get" class="row g-3">
+        <div class="col-md-10">
+            <input type="text" name="search" class="form-control" placeholder="Пошук проєктів..." value="{{ search }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> Шукати
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if projects %}
+<div class="row">
+    {% for project in projects %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card task-card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'project_detail' project.pk %}" class="text-decoration-none">
+                        {{ project.name }}
+                    </a>
+                </h5>
+                <p class="card-text text-muted">
+                    {{ project.description|truncatewords:20|default:"Опис відсутній" }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span class="badge bg-info">
+                            <i class="bi bi-list-task"></i> {{ project.tasks.count }} завдань
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="bi bi-people"></i> {{ project.teams.count }} команд
+                        </span>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-2">
+                    <i class="bi bi-calendar"></i> {{ project.created_at|date:"d.m.Y" }}
+                </small>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="btn-group w-100" role="group">
+                    <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Переглянути
+                    </a>
+                    <a href="{% url 'project_edit' project.pk %}" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-pencil"></i> Редагувати
+                    </a>
+                    <a href="{% url 'project_delete' project.pk %}" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i> Видалити
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> Проєктів не знайдено.
+    <a href="{% url 'project_create' %}" class="alert-link">Створити перший проєкт</a>
+</div>
+{% endif %}
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav aria-label="Навігація по сторінках" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1{% if search %}&search={{ search }}{% endif %}">Перша</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Попередня</a>
+        </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">{{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Наступна</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link"
+                href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">Остання</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

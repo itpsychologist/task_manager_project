@@ -1,0 +1,36 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Видалити проєкт - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="bi bi-exclamation-triangle"></i> Підтвердження видалення</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">Ви впевнені, що хочете видалити проєкт <strong>"{{ project.name }}"</strong>?</p>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle"></i> <strong>Увага!</strong> Це також видалить:
+                    <ul class="mb-0 mt-2">
+                        <li>Всі завдання проєкту ({{ project.tasks.count }})</li>
+                        <li>Зв'язки з командами ({{ project.teams.count }})</li>
+                    </ul>
+                </div>
+
+                <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Так, видалити
+                    </button>
+                    <a href="{% url 'project_detail' project.pk %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Скасувати
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

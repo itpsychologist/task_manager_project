@@ -1,0 +1,228 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ title }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'task_list' %}">Завдання</a></li>
+            <li class="breadcrumb-item active">{{ title }}</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h1 class="mb-1">
+            <i class="bi bi-{% if task %}pencil{% else %}plus-circle{% endif %} text-gradient"></i>
+            {{ title }}
+        </h1>
+        <p class="text-muted mb-0">Заповніть форму для {% if task %}редагування{% else %}створення{% endif %} завдання
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Task Name -->
+                        <div class="mb-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                <i class="bi bi-card-text me-2"></i>Назва завдання *
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="text-danger mt-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.name.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                <i class="bi bi-text-paragraph me-2"></i>Опис *
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="text-danger mt-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.description.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Type and Priority -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.task_type.id_for_label }}" class="form-label">
+                                    <i class="bi bi-tag me-2"></i>Тип завдання
+                                </label>
+                                {{ form.task_type }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                    <i class="bi bi-flag me-2"></i>Пріоритет *
+                                </label>
+                                {{ form.priority }}
+                            </div>
+                        </div>
+
+                        <!-- Deadline and Project -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="{{ form.deadline.id_for_label }}" class="form-label">
+                                    <i class="bi bi-calendar-event me-2"></i>Дедлайн *
+                                </label>
+                                {{ form.deadline }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.project.id_for_label }}" class="form-label">
+                                    <i class="bi bi-folder me-2"></i>Проєкт
+                                </label>
+                                {{ form.project }}
+                            </div>
+                        </div>
+
+                        <!-- Assignees -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-people me-2"></i>Виконавці *
+                            </label>
+                            <div class="card">
+                                <div class="card-body" style="max-height: 250px; overflow-y: auto;">
+                                    {{ form.assignees }}
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Оберіть одного або кількох виконавців</small>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-tags me-2"></i>Теги
+                            </label>
+                            <div class="card">
+                                <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                                    {{ form.tags }}
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Додайте теги для кращої організації</small>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-lg me-2"></i>Зберегти
+                            </button>
+                            <a href="{% if task %}{% url 'task_detail' task.pk %}{% else %}{% url 'task_list' %}{% endif %}"
+                                class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-2"></i>Скасувати
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Tips -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>Поради
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong class="d-block mb-1">Назва завдання</strong>
+                        <small class="text-muted">Використовуйте коротку та зрозумілу назву</small>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="d-block mb-1">Опис</strong>
+                        <small class="text-muted">Детально опишіть що потрібно зробити</small>
+                    </div>
+                    <div class="mb-3">
+                        <strong class="d-block mb-1">Пріоритет</strong>
+                        <small class="text-muted">
+                            <span class="badge badge-urgent me-1">Термінове</span> - критичні завдання<br>
+                            <span class="badge badge-high me-1">Високий</span> - важливі завдання<br>
+                            <span class="badge badge-medium me-1">Середній</span> - звичайні завдання<br>
+                            <span class="badge badge-low me-1">Низький</span> - некритичні завдання
+                        </small>
+                    </div>
+                    <div>
+                        <strong class="d-block mb-1">Виконавці</strong>
+                        <small class="text-muted">Призначте відповідальних за виконання</small>
+                    </div>
+                </div>
+            </div>
+
+            {% if task %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Інформація
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <small class="text-muted d-block mb-2">
+                        <strong>Створено:</strong> {{ task.created_at|date:"d.m.Y H:i" }}
+                    </small>
+                    <small class="text-muted d-block mb-2">
+                        <strong>Автор:</strong> {{ task.created_by.get_full_name }}
+                    </small>
+                    <small class="text-muted d-block">
+                        <strong>Останнє оновлення:</strong> {{ task.updated_at|date:"d.m.Y H:i" }}
+                    </small>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Form field styles */
+    #id_name,
+    #id_description,
+    #id_task_type,
+    #id_priority,
+    #id_deadline,
+    #id_project {
+        width: 100%;
+    }
+
+    #id_description {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    /* Checkbox styles */
+    #id_assignees label,
+    #id_tags label {
+        display: block;
+        padding: 0.5rem;
+        margin-bottom: 0.25rem;
+        border-radius: var(--radius-sm);
+        transition: background-color var(--transition-fast);
+        cursor: pointer;
+    }
+
+    #id_assignees label:hover,
+    #id_tags label:hover {
+        background-color: var(--bg-tertiary);
+    }
+
+    #id_assignees input[type="checkbox"],
+    #id_tags input[type="checkbox"] {
+        margin-right: 0.5rem;
+    }
+</style>
+{% endblock %}

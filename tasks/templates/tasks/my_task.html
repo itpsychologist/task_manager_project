@@ -1,0 +1,132 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Мої завдання{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-person-check-fill"></i> Мої завдання</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="stat-card incomplete">
+            <h5 class="mb-0">
+                <i class="bi bi-hourglass-split"></i> Невиконані завдання
+                <span class="badge bg-warning text-dark float-end">{{ incomplete_tasks.count }}</span>
+            </h5>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card completed">
+            <h5 class="mb-0">
+                <i class="bi bi-check-circle-fill"></i> Виконані завдання
+                <span class="badge bg-success float-end">{{ completed_tasks.count }}</span>
+            </h5>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Невиконані завдання</h5>
+    </div>
+    <div class="card-body">
+        {% if incomplete_tasks %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Назва</th>
+                        <th>Тип</th>
+                        <th>Пріоритет</th>
+                        <th>Дедлайн</th>
+                        <th>Теги</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in incomplete_tasks %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'task_detail' task.pk %}" class="text-decoration-none fw-bold">
+                                {{ task.name }}
+                            </a>
+                        </td>
+                        <td><span class="badge bg-info">{{ task.task_type }}</span></td>
+                        <td><span class="badge badge-{{ task.priority|lower }}">{{ task.get_priority_display }}</span></td>
+                        <td><i class="bi bi-calendar-event"></i> {{ task.deadline|date:"d.m.Y" }}</td>
+                        <td>
+                            {% for tag in task.tags.all %}
+                            <span class="badge bg-primary">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{% url 'task_toggle_status' task.pk %}" class="btn btn-sm btn-success">
+                                <i class="bi bi-check-lg"></i> Завершити
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-check-circle fs-1 text-success"></i>
+            <p class="text-muted">Немає невиконаних завдань. Чудова робота!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-check-all"></i> Виконані завдання</h5>
+    </div>
+    <div class="card-body">
+        {% if completed_tasks %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Назва</th>
+                        <th>Тип</th>
+                        <th>Пріоритет</th>
+                        <th>Дедлайн</th>
+                        <th>Теги</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in completed_tasks %}
+                    <tr class="table-success">
+                        <td>
+                            <a href="{% url 'task_detail' task.pk %}" class="text-decoration-none">
+                                {{ task.name }}
+                            </a>
+                        </td>
+                        <td><span class="badge bg-info">{{ task.task_type }}</span></td>
+                        <td><span class="badge badge-{{ task.priority|lower }}">{{ task.get_priority_display }}</span></td>
+                        <td><i class="bi bi-calendar-event"></i> {{ task.deadline|date:"d.m.Y" }}</td>
+                        <td>
+                            {% for tag in task.tags.all %}
+                            <span class="badge bg-primary">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{% url 'task_detail' task.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i> Переглянути
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted">Немає виконаних завдань</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

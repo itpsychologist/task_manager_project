@@ -1,0 +1,125 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Реєстрація - Task Manager{% endblock %}
+
+{% block auth_content %}
+<div class="text-center mb-4">
+    <div class="sidebar-logo mx-auto mb-3" style="width: 64px; height: 64px; font-size: 2rem;">
+        <i class="bi bi-person-plus"></i>
+    </div>
+    <h2 class="text-gradient mb-2">Приєднуйтесь!</h2>
+    <p class="text-muted">Створіть свій акаунт</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="id_first_name" class="form-label">Ім'я</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+            <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <label for="id_last_name" class="form-label">Прізвище</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+            <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="id_username" class="form-label">Ім'я користувача</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+        <div class="text-danger small">{{ form.username.errors.0 }}</div>
+        {% endif %}
+        {% if form.username.help_text %}
+        <small class="form-text text-muted">{{ form.username.help_text }}</small>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_email" class="form-label">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+        <div class="text-danger small">{{ form.email.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_position" class="form-label">Посада</label>
+        {{ form.position }}
+        {% if form.position.errors %}
+        <div class="text-danger small">{{ form.position.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="id_password1" class="form-label">Пароль</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+        <div class="text-danger small">{{ form.password1.errors.0 }}</div>
+        {% endif %}
+        {% if form.password1.help_text %}
+        <small class="form-text text-muted d-block mt-1">{{ form.password1.help_text }}</small>
+        {% endif %}
+    </div>
+
+    <div class="mb-4">
+        <label for="id_password2" class="form-label">Підтвердження паролю</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+        <div class="text-danger small">{{ form.password2.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success w-100 mb-3">
+        <i class="bi bi-check-circle me-2"></i>Зареєструватися
+    </button>
+
+    <div class="text-center">
+        <p class="text-muted mb-2">Вже є акаунт?</p>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Увійти
+        </a>
+    </div>
+</form>
+
+<style>
+    #id_first_name,
+    #id_last_name,
+    #id_username,
+    #id_email,
+    #id_position,
+    #id_password1,
+    #id_password2 {
+        width: 100%;
+    }
+
+    select#id_position,
+    input#id_first_name,
+    input#id_last_name,
+    input#id_username,
+    input#id_email,
+    input#id_password1,
+    input#id_password2 {
+        display: block;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        appearance: none;
+        border-radius: 0.375rem;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+</style>
+{% endblock %}

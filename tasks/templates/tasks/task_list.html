@@ -1,0 +1,58 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Всі завдання{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2>Всі завдання</h2>
+    <p>Сторінка списку завдань. Перезапустіть сервер для оновлення.</p>
+    <a href="{% url 'task_create' %}" class="btn btn-primary">Створити завдання</a>
+
+    <div class="row mt-4">
+        {% for task in tasks %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ task.name }}</h5>
+                    <p>{{ task.description|truncatewords:10 }}</p>
+                    <a href="{% url 'task_detail' task.pk %}" class="btn btn-sm btn-primary">Переглянути</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Навігація по сторінках" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page=1{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if priority %}&priority={{ priority }}{% endif %}{% if project_id %}&project={{ project_id }}{% endif %}">Перша</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if priority %}&priority={{ priority }}{% endif %}{% if project_id %}&project={{ project_id }}{% endif %}">Попередня</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if priority %}&priority={{ priority }}{% endif %}{% if project_id %}&project={{ project_id }}{% endif %}">Наступна</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link"
+                    href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if priority %}&priority={{ priority }}{% endif %}{% if project_id %}&project={{ project_id }}{% endif %}">Остання</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Управління користувачами{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-people"></i> Користувачі системи</h1>
+</div>
+
+{% if not request.user.is_superuser %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <strong>Доступ заборонено!</strong> Ця сторінка доступна тільки для адміністраторів.
+</div>
+{% else %}
+
+<!-- Search -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control"
+                    placeholder="Пошук за ім'ям, прізвищем, email або username..." value="{{ search }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Шукати
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Workers List -->
+<div class="card">
+    <div class="card-body">
+        {% if workers %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Користувач</th>
+                        <th>Email</th>
+                        <th>Посада</th>
+                        <th>Дата реєстрації</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for worker in workers %}
+                    <tr>
+                        <td>{{ worker.id }}</td>
+                        <td>
+                            <div>
+                                <strong>{{ worker.get_full_name|default:worker.username }}</strong>
+                                {% if worker.is_superuser %}
+                                <span class="badge bg-danger ms-2">Адмін</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">@{{ worker.username }}</small>
+                        </td>
+                        <td>{{ worker.email }}</td>
+                        <td>
+                            {% if worker.position %}
+                            <span class="badge bg-info">{{ worker.position.name }}</span>
+                            {% else %}
+                            <span class="text-muted">Не вказано</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ worker.date_joined|date:"d.m.Y" }}</td>
+                        <td>
+                            <a href="{% url 'worker_edit' worker.pk %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Редагувати
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center mt-4">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search %}&search={{ search }}{% endif %}">Перша</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}">Попередня</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}">Наступна</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}">Остання</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-3">Користувачів не знайдено</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

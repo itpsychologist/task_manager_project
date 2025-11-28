@@ -1,0 +1,43 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Видалити команду - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="bi bi-exclamation-triangle text-danger"></i> Видалити команду з проекту</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <p class="lead">
+                Ви впевнені, що хочете видалити команду
+                <strong>"{{ team.name }}"</strong> з проекту
+                <strong>"{{ project.name }}"</strong>?
+            </p>
+
+            <div class="alert alert-warning">
+                <i class="bi bi-info-circle"></i>
+                <strong>Зверніть увагу:</strong> Команда не буде видалена повністю,
+                вона просто більше не буде прив'язана до цього проекту.
+            </div>
+
+            <div class="mb-3">
+                <p><strong>Інформація про команду:</strong></p>
+                <ul>
+                    <li>Назва: {{ team.name }}</li>
+                    <li>Кількість членів: {{ team.members.count }}</li>
+                </ul>
+            </div>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Так, видалити з проекту
+                </button>
+                <a href="{% url 'project_detail' project.pk %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Скасувати
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

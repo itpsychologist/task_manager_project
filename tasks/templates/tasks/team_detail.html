@@ -1,0 +1,102 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ team.name }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-people"></i> {{ team.name }}</h1>
+    <div>
+        <a href="{% url 'team_edit' team.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Редагувати
+        </a>
+        <a href="{% url 'team_delete' team.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Видалити
+        </a>
+        <a href="{% url 'team_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</div>
+
+<!-- Інформація про команду -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Інформація про команду</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <strong><i class="bi bi-folder2"></i> Проєкт:</strong><br>
+                {% if team.project %}
+                <a href="{% url 'project_detail' team.project.pk %}">{{ team.project.name }}</a>
+                {% else %}
+                <span class="text-muted">Не призначено</span>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <strong><i class="bi bi-person"></i> Кількість членів:</strong><br>
+                {{ members.count }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Члени команди -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-people-fill"></i> Члени команди</h5>
+        <a href="{% url 'team_add_member' team.pk %}" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus"></i> Додати члена
+        </a>
+    </div>
+    <div class="card-body">
+        {% if members %}
+        <div class="row">
+            {% for member in members %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-person-circle"></i> {{ member.get_full_name }}
+                            </h6>
+                            <a href="{% url 'team_remove_member' team.pk member.pk %}"
+                                class="btn btn-sm btn-outline-danger" title="Видалити члена">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        </div>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-briefcase"></i>
+                                {% if member.position %}
+                                {{ member.position.name }}
+                                {% else %}
+                                Посада не вказана
+                                {% endif %}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small>
+                                <i class="bi bi-envelope"></i> {{ member.email }}
+                            </small>
+                        </p>
+                        <div class="mt-2">
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle"></i> {{ member.get_completed_tasks.count }} виконано
+                            </span>
+                            <span class="badge bg-warning">
+                                <i class="bi bi-clock"></i> {{ member.get_incomplete_tasks.count }} в роботі
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">Членів команди немає</p>
+        <a href="{% url 'team_add_member' team.pk %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-circle"></i> Додати першого члена
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

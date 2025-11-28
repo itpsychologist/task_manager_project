@@ -1,0 +1,242 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ task.name }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'task_list' %}">Завдання</a></li>
+            <li class="breadcrumb-item active">{{ task.name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Task Header -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="flex-grow-1">
+                    <h2 class="mb-2">{{ task.name }}</h2>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge badge-{{ task.priority|lower }}">
+                            <i class="bi bi-flag-fill me-1"></i>
+                            {{ task.get_priority_display }}
+                        </span>
+                        {% if task.task_type %}
+                        <span class="badge bg-info">
+                            <i class="bi bi-tag-fill me-1"></i>
+                            {{ task.task_type }}
+                        </span>
+                        {% endif %}
+                        {% if task.is_completed %}
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Виконано
+                        </span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-clock-fill me-1"></i>
+                            В процесі
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    {% if task.created_by == user or user.is_staff %}
+                    <a href="{% url 'task_edit' task.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'task_toggle_status' task.pk %}" class="btn btn-outline-success">
+                        <i class="bi bi-{% if task.is_completed %}arrow-counterclockwise{% else %}check{% endif %}"></i>
+                    </a>
+                    {% if task.created_by == user or user.is_staff %}
+                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-3" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">
+                        <i class="bi bi-info-circle me-2"></i>Огляд
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#comments">
+                        <i class="bi bi-chat-dots me-2"></i>Коментарі
+                        <span class="badge bg-primary ms-1">{{ task.comments.count }}</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activity"
+                        onclick="loadTaskActivity({{ task.pk }})">
+                        <i class="bi bi-activity me-2"></i>Активність
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Опис завдання</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ task.description|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Tab -->
+                <div class="tab-pane fade" id="comments">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Додати коментар</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'task_add_comment' task.pk %}" id="comment-form">
+                                {% csrf_token %}
+                                <textarea name="content" class="form-control mb-3" rows="3"
+                                    placeholder="Напишіть коментар..." required></textarea>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send me-2"></i>Відправити
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="comments-list">
+                        {% for comment in task.comments.all %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-circle fs-4"></i>
+                                        <div>
+                                            <strong>{{ comment.author.get_full_name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mb-0">{{ comment.content|linebreaks }}</p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-chat-dots fs-1"></i>
+                            <p class="mb-0 mt-2">Поки що немає коментарів</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Activity Tab -->
+                <div class="tab-pane fade" id="activity">
+                    <div class="card">
+                        <div class="card-body">
+                            <div id="activity-list">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Завантаження...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Task Details -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Деталі завдання</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">Дедлайн</small>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-calendar-event text-primary"></i>
+                            <strong>{{ task.deadline|date:"d.m.Y" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">Створено</small>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-person text-primary"></i>
+                            <span>{{ task.created_by.get_full_name }}</span>
+                        </div>
+                        <small class="text-muted">{{ task.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+
+                    {% if task.project %}
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">Проєкт</small>
+                        <a href="{% url 'project_detail' task.project.pk %}" class="text-decoration-none">
+                            <i class="bi bi-folder2 text-primary me-2"></i>
+                            {{ task.project.name }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Assignees -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Виконавці</h6>
+                </div>
+                <div class="card-body">
+                    {% for assignee in task.assignees.all %}
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-person-circle fs-4 text-primary"></i>
+                        <div>
+                            <strong class="d-block">{{ assignee.get_full_name }}</strong>
+                            <small class="text-muted">{{ assignee.position }}</small>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted mb-0">Немає призначених виконавців</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tags -->
+            {% if task.tags.all %}
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Теги</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in task.tags.all %}
+                        <a href="{% url 'tag_detail' tag.pk %}" class="badge bg-secondary text-decoration-none">
+                            <i class="bi bi-tag-fill me-1"></i>{{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

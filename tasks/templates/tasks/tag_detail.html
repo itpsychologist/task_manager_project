@@ -1,0 +1,101 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ tag.name }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-tag-fill"></i> {{ tag.name }}</h1>
+    <div>
+        <a href="{% url 'tag_edit' tag.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Редагувати
+        </a>
+        <a href="{% url 'tag_delete' tag.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Видалити
+        </a>
+        <a href="{% url 'tag_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Статистика</h5>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h3>{{ tasks.count }}</h3>
+                    <p class="text-muted mb-0">Всього завдань</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card completed">
+                    <h3>{{ tasks|length|add:0 }}{% for task in tasks %}{% if task.is_completed %}{% if forloop.first
+                        %}{{ forloop.counter0|add:1 }}{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% endfor %}
+                    </h3>
+                    <p class="text-muted mb-0">Виконано</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card incomplete">
+                    <h3>{{ tasks|length|add:0 }}{% for task in tasks %}{% if not task.is_completed %}{% if forloop.first
+                        %}{{ forloop.counter0|add:1 }}{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% endfor %}
+                    </h3>
+                    <p class="text-muted mb-0">В роботі</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Завдання з цією міткою -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-list-task"></i> Завдання з міткою "{{ tag.name }}"</h5>
+        <a href="{% url 'task_create' %}" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus"></i> Додати завдання
+        </a>
+    </div>
+    <div class="card-body">
+        {% if tasks %}
+        <div class="list-group">
+            {% for task in tasks %}
+            <a href="{% url 'task_detail' task.pk %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">
+                        {{ task.name }}
+                        {% if task.is_completed %}
+                        <span class="badge bg-success">Виконано</span>
+                        {% else %}
+                        <span class="badge bg-warning">В роботі</span>
+                        {% endif %}
+                    </h6>
+                    <small>
+                        {% if task.priority == 'Urgent' %}
+                        <span class="badge badge-urgent">Термінове</span>
+                        {% elif task.priority == 'High' %}
+                        <span class="badge badge-high">Високий</span>
+                        {% elif task.priority == 'Medium' %}
+                        <span class="badge badge-medium">Середній</span>
+                        {% else %}
+                        <span class="badge badge-low">Низький</span>
+                        {% endif %}
+                    </small>
+                </div>
+                <p class="mb-1 text-muted">{{ task.description|truncatewords:15 }}</p>
+                <small class="text-muted">
+                    <i class="bi bi-calendar"></i> Дедлайн: {{ task.deadline|date:"d.m.Y" }}
+                    {% if task.project %}
+                    | <i class="bi bi-folder2"></i> {{ task.project.name }}
+                    {% endif %}
+                </small>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">Завдань з цією міткою немає</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

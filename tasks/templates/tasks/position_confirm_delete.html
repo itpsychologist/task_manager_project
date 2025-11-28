@@ -1,0 +1,32 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Видалити посаду{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="bi bi-exclamation-triangle text-danger"></i> Ви впевнені?</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <p class="lead">
+                Ви дійсно хочете видалити посаду <strong>"{{ object.name }}"</strong>?
+            </p>
+
+            <div class="alert alert-warning">
+                <i class="bi bi-info-circle"></i>
+                <strong>Увага:</strong> Видалення посади може вплинути на працівників, у яких призначена ця посада.
+            </div>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Так, видалити
+                </button>
+                <a href="{% url 'position_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Скасувати
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

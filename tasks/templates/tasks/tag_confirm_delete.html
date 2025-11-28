@@ -1,0 +1,33 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Видалити мітку - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4><i class="bi bi-exclamation-triangle"></i> Підтвердження видалення</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">Ви впевнені, що хочете видалити мітку <strong>"{{ tag.name }}"</strong>?</p>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> Ця мітка використовується в {{ tag.tasks.count }} завданнях.
+                    Видалення мітки не видалить завдання, але видалить зв'язок з ними.
+                </div>
+
+                <form method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Так, видалити
+                    </button>
+                    <a href="{% url 'tag_detail' tag.pk %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Скасувати
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

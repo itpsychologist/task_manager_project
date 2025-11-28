@@ -1,0 +1,54 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Додати члена - {{ team.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="bi bi-person-plus"></i> Додати члена до команди "{{ team.name }}"</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="member_id" class="form-label">Оберіть користувача</label>
+                    <select name="member_id" id="member_id" class="form-select" required>
+                        <option value="">-- Оберіть користувача --</option>
+                        {% for worker in available_workers %}
+                        <option value="{{ worker.pk }}">
+                            {{ worker.get_full_name }}
+                            ({{ worker.username }})
+                            {% if worker.position %}
+                            - {{ worker.position.name }}
+                            {% endif %}
+                        </option>
+                        {% empty %}
+                        <option value="" disabled>Немає доступних користувачів</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">
+                        Відображаються лише користувачі, які ще не є членами цієї команди
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Додати члена
+                    </button>
+                    <a href="{% url 'team_detail' team.pk %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Скасувати
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if not available_workers %}
+    <div class="alert alert-warning mt-4">
+        <i class="bi bi-exclamation-triangle"></i>
+        <strong>Увага:</strong> Всі користувачі вже є членами цієї команди або немає зареєстрованих користувачів.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Управління посадами{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-briefcase"></i> Управління посадами</h1>
+    <a href="{% url 'position_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Створити посаду
+    </a>
+</div>
+
+{% if not request.user.is_superuser %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    <strong>Доступ заборонено!</strong> Ця сторінка доступна тільки для адміністраторів.
+</div>
+{% else %}
+
+<div class="card">
+    <div class="card-body">
+        {% if positions %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Назва посади</th>
+                        <th>Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for position in positions %}
+                    <tr>
+                        <td>{{ position.id }}</td>
+                        <td><strong>{{ position.name }}</strong></td>
+                        <td>
+                            <a href="{% url 'position_edit' position.pk %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i> Редагувати
+                            </a>
+                            <a href="{% url 'position_delete' position.pk %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Видалити
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox fs-1 text-muted"></i>
+            <p class="text-muted mt-3">Посад поки немає</p>
+            <a href="{% url 'position_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Створити першу посаду
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Видалити члена - {{ team.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2><i class="bi bi-exclamation-triangle text-danger"></i> Видалити члена з команди</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <p class="lead">
+                Ви впевнені, що хочете видалити користувача
+                <strong>"{{ member.get_full_name }}"</strong> з команди
+                <strong>"{{ team.name }}"</strong>?
+            </p>
+
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Зверніть увагу:</strong> Користувач залишиться в системі,
+                але більше не буде членом цієї команди.
+            </div>
+
+            <div class="mb-3">
+                <p><strong>Інформація про користувача:</strong></p>
+                <ul>
+                    <li>Ім'я: {{ member.get_full_name }}</li>
+                    <li>Email: {{ member.email }}</li>
+                    {% if member.position %}
+                    <li>Посада: {{ member.position.name }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Так, видалити з команди
+                </button>
+                <a href="{% url 'team_detail' team.pk %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Скасувати
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
