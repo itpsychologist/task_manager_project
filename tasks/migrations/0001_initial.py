@@ -14,116 +14,370 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Position',
+            name="Position",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Назва посади')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Назва посади"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Посада',
-                'verbose_name_plural': 'Посади',
+                "verbose_name": "Посада",
+                "verbose_name_plural": "Посади",
             },
         ),
         migrations.CreateModel(
-            name='Project',
+            name="Project",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Назва проєкту')),
-                ('description', models.TextField(blank=True, verbose_name='Опис')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата створення')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Назва проєкту"),
+                ),
+                ("description", models.TextField(blank=True, verbose_name="Опис")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата створення"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Проєкт',
-                'verbose_name_plural': 'Проєкти',
+                "verbose_name": "Проєкт",
+                "verbose_name_plural": "Проєкти",
             },
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Назва тегу')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Назва тегу"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Тег',
-                'verbose_name_plural': 'Теги',
+                "verbose_name": "Тег",
+                "verbose_name_plural": "Теги",
             },
         ),
         migrations.CreateModel(
-            name='TaskType',
+            name="TaskType",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Назва типу')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Назва типу"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Тип завдання',
-                'verbose_name_plural': 'Типи завдань',
+                "verbose_name": "Тип завдання",
+                "verbose_name_plural": "Типи завдань",
             },
         ),
         migrations.CreateModel(
-            name='Worker',
+            name="Worker",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username')),
-                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('email', models.EmailField(max_length=254, unique=True, validators=[django.core.validators.EmailValidator()], verbose_name='Email')),
-                ('first_name', models.CharField(max_length=150, verbose_name='Ім\'я')),
-                ('last_name', models.CharField(max_length=150, verbose_name='Прізвище')),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
-                ('position', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='workers', to='tasks.position', verbose_name='Посада')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        error_messages={
+                            "unique": "A user with that username already exists."
+                        },
+                        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        max_length=150,
+                        unique=True,
+                        validators=[
+                            django.contrib.auth.validators.UnicodeUsernameValidator()
+                        ],
+                        verbose_name="username",
+                    ),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can log into this admin site.",
+                        verbose_name="staff status",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                        verbose_name="active",
+                    ),
+                ),
+                (
+                    "date_joined",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date joined"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=254,
+                        unique=True,
+                        validators=[django.core.validators.EmailValidator()],
+                        verbose_name="Email",
+                    ),
+                ),
+                ("first_name", models.CharField(max_length=150, verbose_name="Ім'я")),
+                (
+                    "last_name",
+                    models.CharField(max_length=150, verbose_name="Прізвище"),
+                ),
+                (
+                    "groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.group",
+                        verbose_name="groups",
+                    ),
+                ),
+                (
+                    "user_permissions",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="Specific permissions for this user.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.permission",
+                        verbose_name="user permissions",
+                    ),
+                ),
+                (
+                    "position",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="workers",
+                        to="tasks.position",
+                        verbose_name="Посада",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Працівник',
-                'verbose_name_plural': 'Працівники',
+                "verbose_name": "Працівник",
+                "verbose_name_plural": "Працівники",
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Назва завдання')),
-                ('description', models.TextField(verbose_name='Опис')),
-                ('deadline', models.DateField(verbose_name='Дедлайн')),
-                ('is_completed', models.BooleanField(default=False, verbose_name='Виконано')),
-                ('priority', models.CharField(choices=[('Urgent', 'Термінове'), ('High', 'Високий'), ('Medium', 'Середній'), ('Low', 'Низький')], default='Medium', max_length=20, verbose_name='Пріоритет')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата створення')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Дата оновлення')),
-                ('assignees', models.ManyToManyField(related_name='assigned_tasks', to=settings.AUTH_USER_MODEL, verbose_name='Виконавці')),
-                ('created_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_tasks', to=settings.AUTH_USER_MODEL, verbose_name='Створив')),
-                ('project', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to='tasks.project', verbose_name='Проєкт')),
-                ('tags', models.ManyToManyField(blank=True, related_name='tasks', to='tasks.tag', verbose_name='Теги')),
-                ('task_type', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tasks', to='tasks.tasktype', verbose_name='Тип завдання')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Назва завдання"),
+                ),
+                ("description", models.TextField(verbose_name="Опис")),
+                ("deadline", models.DateField(verbose_name="Дедлайн")),
+                (
+                    "is_completed",
+                    models.BooleanField(default=False, verbose_name="Виконано"),
+                ),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("Urgent", "Термінове"),
+                            ("High", "Високий"),
+                            ("Medium", "Середній"),
+                            ("Low", "Низький"),
+                        ],
+                        default="Medium",
+                        max_length=20,
+                        verbose_name="Пріоритет",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата створення"
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Дата оновлення"),
+                ),
+                (
+                    "assignees",
+                    models.ManyToManyField(
+                        related_name="assigned_tasks",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Виконавці",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="created_tasks",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Створив",
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tasks",
+                        to="tasks.project",
+                        verbose_name="Проєкт",
+                    ),
+                ),
+                (
+                    "tags",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="tasks",
+                        to="tasks.tag",
+                        verbose_name="Теги",
+                    ),
+                ),
+                (
+                    "task_type",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="tasks",
+                        to="tasks.tasktype",
+                        verbose_name="Тип завдання",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Завдання',
-                'verbose_name_plural': 'Завдання',
-                'ordering': ['-created_at'],
+                "verbose_name": "Завдання",
+                "verbose_name_plural": "Завдання",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Team',
+            name="Team",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, verbose_name='Назва команди')),
-                ('members', models.ManyToManyField(related_name='teams', to=settings.AUTH_USER_MODEL, verbose_name='Члени команди')),
-                ('project', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='teams', to='tasks.project', verbose_name='Проєкт')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Назва команди"),
+                ),
+                (
+                    "members",
+                    models.ManyToManyField(
+                        related_name="teams",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Члени команди",
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="teams",
+                        to="tasks.project",
+                        verbose_name="Проєкт",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Команда',
-                'verbose_name_plural': 'Команди',
+                "verbose_name": "Команда",
+                "verbose_name_plural": "Команди",
             },
         ),
     ]
