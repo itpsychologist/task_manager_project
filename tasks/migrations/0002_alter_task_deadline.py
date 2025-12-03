@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tasks', '0001_initial'),
+        ("tasks", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='deadline',
-            field=models.DateField(validators=[tasks.models.validate_deadline], verbose_name='Дедлайн'),
+            model_name="task",
+            name="deadline",
+            field=models.DateField(
+                validators=[tasks.models.validate_deadline], verbose_name="Дедлайн"
+            ),
         ),
     ]
