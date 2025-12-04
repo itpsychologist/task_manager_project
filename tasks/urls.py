@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-    # Автентифікація
+    # Authentication
     path("register/", views.RegisterView.as_view(), name="register"),
     path(
         "login/",
@@ -14,7 +14,7 @@ urlpatterns = [
     # Dashboard
     path("", views.dashboard, name="dashboard"),
     path("dashboard/", views.dashboard, name="dashboard_alt"),
-    # Завдання
+    # Tasks
     path("tasks/", views.TaskListView.as_view(), name="task_list"),
     path("my-tasks/", views.MyTasksView.as_view(), name="my_tasks"),
     path("tasks/create/", views.TaskCreateView.as_view(), name="task_create"),
@@ -22,11 +22,11 @@ urlpatterns = [
     path("tasks/<int:pk>/edit/", views.TaskUpdateView.as_view(), name="task_edit"),
     path("tasks/<int:pk>/toggle/", views.task_toggle_status, name="task_toggle_status"),
     path("tasks/<int:pk>/delete/", views.TaskDeleteView.as_view(), name="task_delete"),
-    # Коментарі
+    # Comments
     path("tasks/<int:pk>/comment/", views.task_add_comment, name="task_add_comment"),
-    # Активність
+    # Activity
     path("tasks/<int:pk>/activity/", views.task_activity, name="task_activity"),
-    # Проєкти
+    # Projects
     path("projects/", views.ProjectListView.as_view(), name="project_list"),
     path("projects/create/", views.ProjectCreateView.as_view(), name="project_create"),
     path(
@@ -50,7 +50,7 @@ urlpatterns = [
         views.project_remove_team,
         name="project_remove_team",
     ),
-    # Команди
+    # Teams
     path("teams/", views.TeamListView.as_view(), name="team_list"),
     path("teams/create/", views.TeamCreateView.as_view(), name="team_create"),
     path("teams/<int:pk>/", views.TeamDetailView.as_view(), name="team_detail"),
@@ -62,13 +62,13 @@ urlpatterns = [
         views.team_remove_member,
         name="team_remove_member",
     ),
-    # Мітки
+    # Tags
     path("tags/", views.TagListView.as_view(), name="tag_list"),
     path("tags/create/", views.TagCreateView.as_view(), name="tag_create"),
     path("tags/<int:pk>/", views.TagDetailView.as_view(), name="tag_detail"),
     path("tags/<int:pk>/edit/", views.TagUpdateView.as_view(), name="tag_edit"),
     path("tags/<int:pk>/delete/", views.TagDeleteView.as_view(), name="tag_delete"),
-    # Нотифікації
+    # Notifications
     path(
         "notifications/",
         views.NotificationListView.as_view(),
@@ -84,7 +84,7 @@ urlpatterns = [
         views.notification_mark_all_read,
         name="notification_mark_all_read",
     ),
-    # Посади (тільки для superuser)
+    # Positions (superuser only)
     path("positions/", views.PositionListView.as_view(), name="position_list"),
     path(
         "positions/create/", views.PositionCreateView.as_view(), name="position_create"
@@ -99,7 +99,7 @@ urlpatterns = [
         views.PositionDeleteView.as_view(),
         name="position_delete",
     ),
-    # Працівники (тільки для superuser)
+    # Workers (superuser only)
     path("workers/", views.WorkerListView.as_view(), name="worker_list"),
     path(
         "workers/<int:pk>/edit/", views.WorkerUpdateView.as_view(), name="worker_edit"
