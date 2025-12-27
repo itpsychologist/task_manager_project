@@ -628,6 +628,8 @@ class TaskTypeModelTest(TestCase):
         TaskType.objects.create(name="Bug Fix")
         with self.assertRaises(Exception):
             TaskType.objects.create(name="Bug Fix")
+
+
 class WorkerRegistrationFormTest(TestCase):
     """Test WorkerRegistrationForm."""
 
@@ -922,6 +924,8 @@ class CommentFormTest(TestCase):
         """Test content field has correct label."""
         form = CommentForm()
         self.assertEqual(form.fields["content"].label, "Comment")
+
+
 class RegisterViewTest(TestCase):
     """Test RegisterView."""
 
@@ -1556,6 +1560,8 @@ class WorkerManagementViewsTest(TestCase):
         url = reverse("worker_edit", kwargs={"pk": self.regular_user.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
+
+
 class TaskPostSaveSignalTest(TestCase):
     """Test task_post_save signal."""
 

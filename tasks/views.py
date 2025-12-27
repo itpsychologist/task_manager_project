@@ -474,9 +474,7 @@ def team_add_member(request, pk):
         if member_id:
             member = get_object_or_404(Worker, pk=member_id)
             team.members.add(member)
-            messages.success(
-                request, f'User "{member.get_full_name()}" added to team!'
-            )
+            messages.success(request, f'User "{member.get_full_name()}" added to team!')
         return redirect("team_detail", pk=team.pk)
 
     # Get workers not in this team
@@ -498,9 +496,7 @@ def team_remove_member(request, pk, member_pk):
 
     if request.method == "POST":
         team.members.remove(member)
-        messages.success(
-            request, f'User "{member.get_full_name()}" removed from team!'
-        )
+        messages.success(request, f'User "{member.get_full_name()}" removed from team!')
         return redirect("team_detail", pk=team.pk)
 
     context = {
