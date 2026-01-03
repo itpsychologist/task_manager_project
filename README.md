@@ -201,3 +201,10 @@ This project is for educational/internal use.
 ## Support
 
 For issues or questions, please contact the development team.
+
+## Deployment
+
+https://taskmanager-ze15.onrender.com/ 
+
+user: testuser
+password: test1234
