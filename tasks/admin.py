@@ -79,9 +79,16 @@ class TaskAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Basic Information",
-            {"fields": ("name", "description", "task_type", "priority", "deadline")},
+            {"fields": ("name",
+                        "description",
+                        "task_type",
+                        "priority",
+                        "deadline")},
         ),
-        ("Assignment", {"fields": ("assignees", "tags", "project", "created_by")}),
+        ("Assignment", {"fields": ("assignees",
+                                   "tags",
+                                   "project",
+                                   "created_by")}),
         ("Status", {"fields": ("is_completed",)}),
         (
             "Metadata",
@@ -151,7 +158,11 @@ class ActivityLogAdmin(admin.ModelAdmin):
     list_filter = ["activity_type", "created_at"]
     search_fields = ["description", "task__name", "user__username"]
     date_hierarchy = "created_at"
-    readonly_fields = ["task", "user", "activity_type", "description", "created_at"]
+    readonly_fields = ["task",
+                       "user",
+                       "activity_type",
+                       "description",
+                       "created_at"]
 
     def description_preview(self, obj):
         """Show first 50 characters of the description."""
@@ -174,7 +185,10 @@ class ActivityLogAdmin(admin.ModelAdmin):
 class NotificationAdmin(admin.ModelAdmin):
     """Notification administration."""
 
-    list_display = ["recipient", "notification_type", "title", "is_read", "created_at"]
+    list_display = ["recipient",
+                    "notification_type",
+                    "title", "is_read",
+                    "created_at"]
     list_filter = ["notification_type", "is_read", "created_at"]
     search_fields = ["title", "message", "recipient__username"]
     date_hierarchy = "created_at"

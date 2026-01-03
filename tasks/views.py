@@ -166,7 +166,8 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         task = self.get_object()
         if task.created_by != request.user and not request.user.is_staff:
-            messages.error(request, "You do not have permission to edit this task")
+            messages.error(request,
+                           "You do not have permission to edit this task")
             return redirect("task_detail", pk=task.pk)
         return super().dispatch(request, *args, **kwargs)
 
@@ -200,7 +201,8 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         task = self.get_object()
         if task.created_by != request.user and not request.user.is_staff:
-            messages.error(request, "You do not have permission to edit this task")
+            messages.error(request,
+                           "You do not have permission to edit this task")
             return redirect("task_detail", pk=task.pk)
         return super().dispatch(request, *args, **kwargs)
 
@@ -337,7 +339,9 @@ class TeamListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = (
-            Team.objects.all().select_related("project").prefetch_related("members")
+            Team.objects.all()
+            .select_related("project")
+            .prefetch_related("members")
         )
 
         # Search filtering
@@ -362,7 +366,8 @@ class TeamDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["members"] = self.object.members.all().select_related("position")
+        context["members"] = (
+            self.object.members.all().select_related("position"))
         return context
 
 
@@ -436,7 +441,9 @@ def project_add_team(request, pk):
         return redirect("project_detail", pk=project.pk)
 
     # Get teams that are not assigned to any project or to this project
-    available_teams = Team.objects.filter(Q(project__isnull=True) | Q(project=project))
+    available_teams = (
+        Team.objects.filter(Q(project__isnull=True) | Q(project=project))
+    )
 
     context = {
         "project": project,
@@ -474,7 +481,8 @@ def team_add_member(request, pk):
         if member_id:
             member = get_object_or_404(Worker, pk=member_id)
             team.members.add(member)
-            messages.success(request, f'User "{member.get_full_name()}" added to team!')
+            messages.success(request,
+                             f'User "{member.get_full_name()}" added to team!')
         return redirect("team_detail", pk=team.pk)
 
     # Get workers not in this team
@@ -496,7 +504,8 @@ def team_remove_member(request, pk, member_pk):
 
     if request.method == "POST":
         team.members.remove(member)
-        messages.success(request, f'User "{member.get_full_name()}" removed from team!')
+        messages.success(request,
+                         f'User "{member.get_full_name()}" removed from team!')
         return redirect("team_detail", pk=team.pk)
 
     context = {
@@ -694,7 +703,8 @@ def task_add_comment(request, pk):
                         "comment": {
                             "author": comment.author.get_full_name(),
                             "content": comment.content,
-                            "created_at": comment.created_at.strftime("%d.%m.%Y %H:%M"),
+                            "created_at":
+                                comment.created_at.strftime("%d.%m.%Y %H:%M"),
                         },
                     }
                 )
@@ -747,7 +757,8 @@ def task_activity(request, pk):
 
     activity_list = [
         {
-            "user": activity.user.get_full_name() if activity.user else "System",
+            "user": activity.user.get_full_name()
+            if activity.user else "System",
             "type": activity.get_activity_type_display(),
             "description": activity.description,
             "created_at": activity.created_at.strftime("%d.%m.%Y %H:%M"),
@@ -785,7 +796,8 @@ class PositionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def form_valid(self, form):
         messages.success(
-            self.request, f'Position "{form.instance.name}" created successfully!'
+            self.request,
+            f'Position "{form.instance.name}" created successfully!'
         )
         return super().form_valid(form)
 
@@ -803,7 +815,8 @@ class PositionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(
-            self.request, f'Position "{form.instance.name}" updated successfully!'
+            self.request,
+            f'Position "{form.instance.name}" updated successfully!'
         )
         return super().form_valid(form)
 
@@ -820,14 +833,17 @@ class PositionDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         position = self.get_object()
-        messages.success(request, f'Position "{position.name}" deleted successfully!')
+        messages.success(request,
+                         f'Position "{position.name}" deleted successfully!')
         return super().delete(request, *args, **kwargs)
 
 
 @login_required
 def notification_mark_read(request, pk):
     """Mark notification as read."""
-    notification = get_object_or_404(Notification, pk=pk, recipient=request.user)
+    notification = get_object_or_404(Notification,
+                                     pk=pk,
+                                     recipient=request.user)
     notification.mark_as_read()
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -864,7 +880,9 @@ class WorkerListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         queryset = (
-            Worker.objects.all().select_related("position").order_by("-date_joined")
+            Worker.objects.all()
+            .select_related("position")
+            .order_by("-date_joined")
         )
 
         # Search filtering
@@ -898,7 +916,8 @@ class WorkerUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(
-            self.request, f'Worker "{form.instance.get_full_name()}" data updated!'
+            self.request,
+            f'Worker "{form.instance.get_full_name()}" data updated!'
         )
         return super().form_valid(form)
 

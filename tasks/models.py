@@ -14,7 +14,9 @@ def validate_deadline(value):
 class Position(models.Model):
     """Employee position."""
 
-    name = models.CharField(max_length=100, unique=True, verbose_name="Position Name")
+    name = models.CharField(max_length=100,
+                            unique=True,
+                            verbose_name="Position Name")
 
     class Meta:
         verbose_name = "Position"
@@ -67,7 +69,9 @@ class Worker(AbstractUser):
 class TaskType(models.Model):
     """Task type."""
 
-    name = models.CharField(max_length=100, unique=True, verbose_name="Type Name")
+    name = models.CharField(max_length=100,
+                            unique=True,
+                            verbose_name="Type Name")
 
     class Meta:
         verbose_name = "Task Type"
@@ -80,7 +84,9 @@ class TaskType(models.Model):
 class Tag(models.Model):
     """Tag for tasks."""
 
-    name = models.CharField(max_length=100, unique=True, verbose_name="Tag Name")
+    name = models.CharField(max_length=100,
+                            unique=True,
+                            verbose_name="Tag Name")
 
     class Meta:
         verbose_name = "Tag"
@@ -95,7 +101,8 @@ class Project(models.Model):
 
     name = models.CharField(max_length=200, verbose_name="Project Name")
     description = models.TextField(blank=True, verbose_name="Description")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Created At")
 
     class Meta:
         verbose_name = "Project"
@@ -141,7 +148,8 @@ class Task(models.Model):
 
     name = models.CharField(max_length=200, verbose_name="Task Name")
     description = models.TextField(verbose_name="Description")
-    deadline = models.DateField(verbose_name="Deadline", validators=[validate_deadline])
+    deadline = models.DateField(verbose_name="Deadline",
+                                validators=[validate_deadline])
     is_completed = models.BooleanField(default=False, verbose_name="Completed")
     priority = models.CharField(
         max_length=20,
@@ -177,8 +185,10 @@ class Task(models.Model):
         related_name="created_tasks",
         verbose_name="Created By",
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name="Updated At")
 
     class Meta:
         verbose_name = "Task"
@@ -215,14 +225,20 @@ class Comment(models.Model):
     """Comment on a task."""
 
     task = models.ForeignKey(
-        Task, on_delete=models.CASCADE, related_name="comments", verbose_name="Task"
+        Task, on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="Task"
     )
     author = models.ForeignKey(
-        Worker, on_delete=models.CASCADE, related_name="comments", verbose_name="Author"
+        Worker, on_delete=models.CASCADE,
+        related_name="comments",
+        verbose_name="Author"
     )
     content = models.TextField(verbose_name="Comment Content")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Created At")
+    updated_at = models.DateTimeField(auto_now=True,
+                                      verbose_name="Updated At")
 
     class Meta:
         verbose_name = "Comment"
@@ -266,7 +282,8 @@ class ActivityLog(models.Model):
         max_length=20, choices=ACTIVITY_TYPES, verbose_name="Activity Type"
     )
     description = models.TextField(verbose_name="Description")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Created At")
 
     class Meta:
         verbose_name = "Activity Log"
@@ -295,7 +312,8 @@ class Notification(models.Model):
         verbose_name="Recipient",
     )
     notification_type = models.CharField(
-        max_length=30, choices=NOTIFICATION_TYPES, verbose_name="Notification Type"
+        max_length=30, choices=NOTIFICATION_TYPES,
+        verbose_name="Notification Type"
     )
     title = models.CharField(max_length=200, verbose_name="Title")
     message = models.TextField(verbose_name="Message")
@@ -307,8 +325,10 @@ class Notification(models.Model):
         blank=True,
         verbose_name="Task",
     )
-    is_read = models.BooleanField(default=False, verbose_name="Read")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    is_read = models.BooleanField(default=False,
+                                  verbose_name="Read")
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name="Created At")
 
     class Meta:
         verbose_name = "Notification"

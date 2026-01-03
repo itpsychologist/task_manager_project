@@ -84,7 +84,8 @@ def comment_post_save(sender, instance, created, **kwargs):
             )
 
         # Also notify task creator if they are not the comment author
-        if instance.task.created_by and instance.task.created_by != instance.author:
+        if (instance.task.created_by
+                and instance.task.created_by != instance.author):
             if not instance.task.assignees.filter(
                 id=instance.task.created_by.id
             ).exists():

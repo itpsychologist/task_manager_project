@@ -1,0 +1,49 @@
+[
+{
+    "model": "tasks.position",
+    "pk": 1,
+    "fields": {
+        "name": "CEO"
+    }
+},
+{
+    "model": "tasks.position",
+    "pk": 2,
+    "fields": {
+        "name": "developer"
+    }
+},
+{
+    "model": "tasks.position",
+    "pk": 3,
+    "fields": {
+        "name": "quality assurance"
+    }
+},
+{
+    "model": "tasks.position",
+    "pk": 4,
+    "fields": {
+        "name": "project manager"
+    }
+},
+{
+    "model": "tasks.worker",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$OKRpVf1LxXtKItEgAIjswd$UoR4dZxd31nalxaOLlnDXyXSBIIHAJF1BpaxytWcnJc=",
+        "last_login": "2025-12-30T14:21:44.283Z",
+        "is_superuser": true,
+        "username": "testuser",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-12-27T17:25:32.370Z",
+        "position": null,
+        "email": "testu@task.com",
+        "first_name": "",
+        "last_name": "",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

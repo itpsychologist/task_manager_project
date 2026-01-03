@@ -72,7 +72,9 @@ class WorkerModelTest(TestCase):
 
     def test_worker_str(self):
         """Test worker string representation."""
-        expected = f"{self.worker.first_name} {self.worker.last_name} ({self.position})"
+        expected = (f"{self.worker.first_name}"
+                    f"{self.worker.last_name}"
+                    f"({self.position})")
         self.assertEqual(str(self.worker), expected)
 
     def test_get_completed_tasks(self):
@@ -180,23 +182,6 @@ class WorkerModelTest(TestCase):
             created_by=self.worker,
         )
 
-        # Create notifications
-        unread1 = Notification.objects.create(
-            recipient=self.worker,
-            notification_type="task_assigned",
-            title="Unread 1",
-            message="Test",
-            task=task,
-            is_read=False,
-        )
-        unread2 = Notification.objects.create(
-            recipient=self.worker,
-            notification_type="task_assigned",
-            title="Unread 2",
-            message="Test",
-            task=task,
-            is_read=False,
-        )
         Notification.objects.create(
             recipient=self.worker,
             notification_type="task_assigned",
@@ -264,7 +249,8 @@ class TaskModelTest(TestCase):
         try:
             validate_deadline(future_date)
         except ValidationError:
-            self.fail("validate_deadline raised ValidationError for future date")
+            self.fail("validate_deadline raised"
+                      "ValidationError for future date")
 
     def test_validate_deadline_past(self):
         """Test deadline validation rejects past dates."""
@@ -345,8 +331,12 @@ class TaskModelTest(TestCase):
             created_by=self.worker,
         )
 
-        Comment.objects.create(task=task, author=self.worker, content="First comment")
-        Comment.objects.create(task=task, author=self.worker, content="Second comment")
+        Comment.objects.create(task=task,
+                               author=self.worker,
+                               content="First comment")
+        Comment.objects.create(task=task,
+                               author=self.worker,
+                               content="Second comment")
 
         comments = task.get_comments()
         self.assertEqual(comments.count(), 2)
@@ -740,7 +730,8 @@ class TaskFormTest(TestCase):
             "description": "Test description",
             "task_type": self.task_type.id,
             "priority": "High",
-            "deadline": (timezone.now().date() + timedelta(days=1)).isoformat(),
+            "deadline": (
+                    timezone.now().date() + timedelta(days=1)).isoformat(),
             "assignees": [self.worker.id],
             "tags": [self.tag.id],
             "project": self.project.id,
@@ -774,7 +765,8 @@ class TaskFormTest(TestCase):
         """Test tags field has checkbox select multiple widget."""
         form = TaskForm()
         self.assertEqual(
-            form.fields["tags"].widget.__class__.__name__, "CheckboxSelectMultiple"
+            form.fields["tags"].widget.__class__.__name__,
+            "CheckboxSelectMultiple"
         )
 
 
@@ -861,7 +853,8 @@ class TeamFormTest(TestCase):
         """Test members field has checkbox select multiple widget."""
         form = TeamForm()
         self.assertEqual(
-            form.fields["members"].widget.__class__.__name__, "CheckboxSelectMultiple"
+            form.fields["members"].widget.__class__.__name__,
+            "CheckboxSelectMultiple"
         )
 
     def test_project_optional(self):
@@ -914,10 +907,13 @@ class CommentFormTest(TestCase):
     def test_content_widget(self):
         """Test content field has textarea widget with correct attributes."""
         form = CommentForm()
-        self.assertEqual(form.fields["content"].widget.__class__.__name__, "Textarea")
-        self.assertEqual(form.fields["content"].widget.attrs["rows"], 3)
+        self.assertEqual(form.fields["content"].widget.__class__.__name__,
+                         "Textarea")
+        self.assertEqual(form.fields["content"].widget.attrs["rows"],
+                         3)
         self.assertEqual(
-            form.fields["content"].widget.attrs["placeholder"], "Add a comment..."
+            form.fields["content"].widget.attrs["placeholder"],
+            "Add a comment..."
         )
 
     def test_content_label(self):
@@ -1105,7 +1101,8 @@ class TaskCreateViewTest(TestCase):
         data = {
             "name": "New Task",
             "description": "Test description",
-            "deadline": (timezone.now().date() + timedelta(days=1)).isoformat(),
+            "deadline": (
+                    timezone.now().date() + timedelta(days=1)).isoformat(),
             "priority": "High",
             "task_type": self.task_type.id,
             "assignees": [self.user.id],  # Add required assignees
@@ -1357,7 +1354,8 @@ class ProjectViewsTest(TestCase):
     def test_project_detail_view(self):
         """Test project detail view."""
         project = Project.objects.create(name="Test Project")
-        response = self.client.get(reverse("project_detail", kwargs={"pk": project.pk}))
+        response = self.client.get(reverse(
+            "project_detail", kwargs={"pk": project.pk}))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["project"], project)
 
@@ -1593,7 +1591,8 @@ class TaskPostSaveSignalTest(TestCase):
         self.assertEqual(ActivityLog.objects.count(), initial_count + 1)
 
         # Verify activity log details
-        log = ActivityLog.objects.filter(task=task, activity_type="created").first()
+        log = ActivityLog.objects.filter(task=task,
+                                         activity_type="created").first()
         self.assertIsNotNone(log)
         self.assertEqual(log.user, self.worker)
         self.assertIn(task.name, log.description)
@@ -1662,7 +1661,8 @@ class TaskAssigneesChangedSignalTest(TestCase):
 
     def test_notification_created_on_assignment(self):
         """Test notification is created when worker is assigned to task."""
-        initial_count = Notification.objects.filter(recipient=self.worker2).count()
+        initial_count = Notification.objects.filter(
+            recipient=self.worker2).count()
 
         # Assign worker to task
         self.task.assignees.add(self.worker2)
@@ -1672,7 +1672,8 @@ class TaskAssigneesChangedSignalTest(TestCase):
         self.assertEqual(notifications.count(), initial_count + 1)
 
         # Verify notification details
-        notification = notifications.filter(notification_type="task_assigned").first()
+        notification = notifications.filter(
+            notification_type="task_assigned").first()
         self.assertIsNotNone(notification)
         self.assertEqual(notification.task, self.task)
         self.assertIn(self.task.name, notification.message)
@@ -1688,7 +1689,8 @@ class TaskAssigneesChangedSignalTest(TestCase):
         self.task.assignees.add(self.worker2)
 
         # Check activity log was created
-        logs = ActivityLog.objects.filter(task=self.task, activity_type="assigned")
+        logs = ActivityLog.objects.filter(
+            task=self.task, activity_type="assigned")
         self.assertEqual(logs.count(), initial_count + 1)
 
         # Verify activity log details
@@ -1709,7 +1711,8 @@ class TaskAssigneesChangedSignalTest(TestCase):
         self.task.assignees.remove(self.worker2)
 
         # Check activity log was created
-        logs = ActivityLog.objects.filter(task=self.task, activity_type="unassigned")
+        logs = ActivityLog.objects.filter(
+            task=self.task, activity_type="unassigned")
         self.assertEqual(logs.count(), initial_count + 1)
 
         # Verify activity log details
@@ -1719,8 +1722,10 @@ class TaskAssigneesChangedSignalTest(TestCase):
 
     def test_multiple_assignees_create_multiple_notifications(self):
         """Test multiple workers get notifications when assigned."""
-        initial_count1 = Notification.objects.filter(recipient=self.worker1).count()
-        initial_count2 = Notification.objects.filter(recipient=self.worker2).count()
+        initial_count1 = Notification.objects.filter(
+            recipient=self.worker1).count()
+        initial_count2 = Notification.objects.filter(
+            recipient=self.worker2).count()
 
         # Assign both workers
         self.task.assignees.add(self.worker1, self.worker2)
@@ -1789,13 +1794,9 @@ class CommentPostSaveSignalTest(TestCase):
             task=self.task, activity_type="commented"
         ).count()
 
-        # Create comment
-        comment = Comment.objects.create(
-            task=self.task, author=self.commenter, content="Test comment"
-        )
-
         # Check activity log was created
-        logs = ActivityLog.objects.filter(task=self.task, activity_type="commented")
+        logs = ActivityLog.objects.filter(
+            task=self.task, activity_type="commented")
         self.assertEqual(logs.count(), initial_count + 1)
 
         # Verify activity log details
@@ -1804,10 +1805,13 @@ class CommentPostSaveSignalTest(TestCase):
         self.assertIn(self.commenter.get_full_name(), log.description)
 
     def test_notifications_created_for_assignees(self):
-        """Test notifications are created for assignees when comment is added."""
+        """Test notifications are created for assignees
+        when comment is added."""
         # Comment author should not receive notification
-        initial_count1 = Notification.objects.filter(recipient=self.assignee1).count()
-        initial_count2 = Notification.objects.filter(recipient=self.assignee2).count()
+        initial_count1 = Notification.objects.filter(
+            recipient=self.assignee1).count()
+        initial_count2 = Notification.objects.filter(
+            recipient=self.assignee2).count()
 
         # Create comment
         Comment.objects.create(
@@ -1852,7 +1856,8 @@ class CommentPostSaveSignalTest(TestCase):
 
     def test_task_creator_receives_notification(self):
         """Test task creator receives notification if not an assignee."""
-        initial_count = Notification.objects.filter(recipient=self.task_creator).count()
+        initial_count = Notification.objects.filter(
+            recipient=self.task_creator).count()
 
         # Create comment
         Comment.objects.create(
@@ -1860,16 +1865,19 @@ class CommentPostSaveSignalTest(TestCase):
         )
 
         # Task creator should receive notification
-        notifications = Notification.objects.filter(recipient=self.task_creator)
+        notifications = Notification.objects.filter(
+            recipient=self.task_creator)
         self.assertEqual(notifications.count(), initial_count + 1)
 
         # Verify notification details
-        notification = notifications.filter(notification_type="task_commented").first()
+        notification = notifications.filter(
+            notification_type="task_commented").first()
         self.assertIsNotNone(notification)
         self.assertIn("your task", notification.message)
 
     def test_task_creator_as_assignee_receives_one_notification(self):
-        """Test task creator who is also assignee receives only one notification."""
+        """Test task creator who is also
+        assignee receives only one notification."""
         # Create new task where creator is also assignee
         new_task = Task.objects.create(
             name="New Task",
